@@ -14,6 +14,10 @@ class Connection:
     nodes: tuple[Node, Node]
     distance: int
 
+    @property
+    def cost(self) -> int:
+        return self.distance - 3
+
     def __repr__(self) -> str:
         return f"Connection({self.nodes[0].id}, {self.nodes[1].id})"
 
