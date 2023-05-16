@@ -33,12 +33,12 @@ class Node:
             )
 
             send_sink = (
-                Route(self.id, self.sink.cost, connection.cost)
+                Route(self.id, self.sink.cost + connection.cost)
                 if self.sink is not None
                 else None
             )
             send_drain = (
-                Route(self.id, self.drain.cost, connection.cost)
+                Route(self.id, self.drain.cost + connection.cost)
                 if self.drain is not None
                 else None
             )
@@ -48,11 +48,15 @@ class Node:
 @dataclass
 class Connection:
     nodes: tuple[Node, Node]
-    distance: int
+    cost: int
 
-    @property
-    def cost(self) -> int:
-        return self.distance ** 2
+    def update_cost(self) -> float:
+        self.cost = self.calculate_cost()
+
+    def calculate_cost(self) -> float:
+        return (self.nodes[0].pos.x - self.nodes[1].pos.x) ** 2 + (
+            self.nodes[0].pos.y - self.nodes[1].pos.y
+        ) ** 2
 
     def __repr__(self) -> str:
         return f"Connection({self.nodes[0].id}, {self.nodes[1].id})"
@@ -61,15 +65,10 @@ class Connection:
 @dataclass
 class Route:
     source: int
-    initial_cost: float
-    added_cost: float = 0
-
-    @property
-    def cost(self) -> float:
-        return self.initial_cost + self.added_cost
+    cost: int
 
 
-@dataclass(frozen=True)
+@dataclass
 class Point:
     x: int
     y: int
