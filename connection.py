@@ -18,27 +18,19 @@ def update_position(node: Node, new_pos):
         connection.distance = sqrt((connection.nodes[0].pos.x - connection.nodes[1].pos.x) ** 2 + (connection.nodes[0].pos.y - connection.nodes[1].pos.y) ** 2)
 
 def find_move_direction(node: Node, nodes: list[Node], wiggle = 0.01):
-    distance_to_value = lambda a, b: (a ** 2 + b ** 2) ** 0.5
-
     update_distances(nodes[0], nodes[-1])
-    current_value = distance_to_value(
-        node.connections[node.sink.next_node.id].distance,
-        node.connections[node.drain.next_node.id].distance
-    )
+    current_value = node.connections[node.sink.next_node.id].cost + \
+        + node.connections[node.drain.next_node.id].cost
     current_pos = node.pos
 
     update_position(node, Point(node.pos.x + wiggle, node.pos.y))
-    new_value = distance_to_value(
-        node.connections[node.sink.next_node.id].distance,
-        node.connections[node.drain.next_node.id].distance
-    )
+    new_value = node.connections[node.sink.next_node.id].cost + \
+        + node.connections[node.drain.next_node.id].cost
     dx = -(new_value - current_value)
 
     update_position(node, Point(node.pos.x - wiggle, node.pos.y + wiggle))
-    new_value = distance_to_value(
-        node.connections[node.sink.next_node.id].distance,
-        node.connections[node.drain.next_node.id].distance
-    )
+    new_value = node.connections[node.sink.next_node.id].cost + \
+        + node.connections[node.drain.next_node.id].cost
     dy = -(new_value - current_value)
 
     update_position(node, current_pos)
