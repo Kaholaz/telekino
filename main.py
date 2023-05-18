@@ -60,13 +60,12 @@ def find_move_direction(node: Node, wiggle=0.01):
 if __name__ == "__main__":
     from matplotlib import pyplot as plt
 
-    nodes, connections = create_nodes(
-        [Point(5, -1), Point(0, -2), Point(2, 4), Point(-1, 3), Point(-3, 5)]
-    )
+    nodes, connections = create_nodes( [Point(5, -1), Point(0, -2), Point(2, 4), Point(-1, 3), Point(-3, 5)])
+    colors = ["red", "green", "blue", "yellow", "orange"]
 
     for _ in range(500):
         for node in nodes:
-            plt.plot(node.pos.x, node.pos.y, "o")
+            plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
             node.send_routes()
 
         directions = {node.id: find_move_direction(node) for node in nodes[1:-1]}
