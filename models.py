@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -11,22 +11,16 @@ class Node:
     pos: "Point"
     connections: dict[int, "Connection"]
 
-    sink: "Route" = None
-    drain: "Route" = None
+    endpoint: bool = False
+    endpoints: dict[int, "Node"] = field(default_factory=dict)
 
-    def process_routes(self, sink: "Route", drain: "Route") -> None:
-        if sink is not None and (
-            self.sink is None
-            or sink.cost < self.sink.cost
-            or (sink.source == self.sink.source)
-        ):
-            self.sink = sink
-        if drain is not None and (
-            self.drain is None
-            or drain.cost < self.drain.cost
-            or (drain.source == self.drain.source)
-        ):
-            self.drain = drain
+    def process_routes(self, endpoints: dict[int, "Node"]) -> None:
+        for endpoint_id, route in endpoints.items():
+            if (
+                endpoint_id not in self.endpoints
+                or route.cost < self.endpoints[endpoint_id].cost
+            ):
+                self.endpoints[endpoint_id] = route
 
     def send_routes(self) -> None:
         for connection in self.connections.values():
@@ -36,17 +30,20 @@ class Node:
                 else connection.nodes[1]
             )
 
-            send_sink = (
-                Route(self.id, self.sink.cost + connection.cost)
-                if self.sink is not None
-                else None
+            connected_node.process_routes(
+                {
+                    endpoint_id: Route(
+                        self.id,
+                        route.endpoint,
+                        route.cost + connection.cost,
+                    )
+                    for endpoint_id, route in self.endpoints.items()
+                }
             )
-            send_drain = (
-                Route(self.id, self.drain.cost + connection.cost)
-                if self.drain is not None
-                else None
-            )
-            connected_node.process_routes(send_sink, send_drain)
+
+    def make_endpoint(self) -> None:
+        self.endpoint = True
+        self.endpoints = {self.id: Route(self.id, self.id, 0)}
 
 
 @dataclass
@@ -79,6 +76,7 @@ class Connection:
 @dataclass
 class Route:
     source: int
+    endpoint: int
     cost: int
 
 
