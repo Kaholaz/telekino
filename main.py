@@ -1,4 +1,22 @@
 from models import Node, Connection, Point, Route
+import random
+
+
+def create_random_nodes(
+    number_of_nodes: int, endpoints: int, domain: tuple[float, float] = (-20, 20)
+):
+    """
+    Create a list of random nodes.
+    """
+    r = random.Random(42)
+    points = [
+        Point(
+            r.random() * (domain[1] - domain[0]) + domain[0],
+            r.random() * (domain[1] - domain[0]) + domain[0],
+        )
+        for _ in range(number_of_nodes)
+    ]
+    return create_nodes(points, endpoints)
 
 
 def create_nodes(
@@ -61,14 +79,25 @@ def find_move_direction(node: Node, wiggle=0.01):
 if __name__ == "__main__":
     from matplotlib import pyplot as plt
 
-    nodes, connections = create_nodes(
-        [Point(5, -1), Point(0, -2), Point(2, 4), Point(-1, 3), Point(-3, 5)], 3
-    )
-    colors = ["red", "green", "blue", "yellow", "orange"]
+    nodes, connections = create_random_nodes(20, 3)
+    colors = [
+        "red",
+        "green",
+        "blue",
+        "yellow",
+        "orange",
+        "purple",
+        "pink",
+        "brown",
+        "gray",
+    ]
+    for node in filter(lambda n: n.endpoint, nodes):
+        plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
+        plt.text(node.pos.x + 1, node.pos.y, f"endpoint {node.id}")
 
-    for _ in range(10000):
+    for _ in range(500):
         for node in nodes:
-            plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
+            plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)], markersize=1)
             node.send_routes()
 
         directions = {
@@ -85,5 +114,17 @@ if __name__ == "__main__":
 
         for connection in connections:
             connection.update_cost()
+
+    for node in filter(lambda n: not n.endpoint, nodes):
+        for route in node.endpoints.values():
+            connection = node.connections[route.source]
+            strength = 1 / connection.calculate_cost()
+            plt.plot(
+                [n.pos.x for n in connection.nodes],
+                [n.pos.y for n in connection.nodes], 
+                color="black",
+                alpha=strength,
+            )
+
 
     plt.show()
