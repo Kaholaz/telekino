@@ -3,6 +3,10 @@ from dataclasses import dataclass
 
 @dataclass
 class Node:
+    """
+    A node in the graph.
+    """
+
     id: int
     pos: "Point"
     connections: dict[int, "Connection"]
@@ -47,13 +51,23 @@ class Node:
 
 @dataclass
 class Connection:
+    """
+    A connection between two nodes.
+    """
+
     nodes: tuple[Node, Node]
     cost: int
 
     def update_cost(self) -> float:
+        """
+        Call the calculate_cost method and update the cost attribute.
+        """
         self.cost = self.calculate_cost()
 
     def calculate_cost(self) -> float:
+        """
+        Calculate the cost of the connection.
+        """
         return (self.nodes[0].pos.x - self.nodes[1].pos.x) ** 2 + (
             self.nodes[0].pos.y - self.nodes[1].pos.y
         ) ** 2

@@ -2,6 +2,10 @@ from models import Node, Connection, Point, Route
 
 
 def create_nodes(points: list[Point]) -> tuple[list[Node], list[Connection]]:
+    """
+    Initialize the nodes and connections between them based on the given points.
+    The first node is the source and the last node is the sink.
+    """
     nodes = [Node(i, points[i], {}) for i in range(len(points))]
     connections = []
     for i in range(len(points)):
@@ -20,14 +24,20 @@ def create_nodes(points: list[Point]) -> tuple[list[Node], list[Connection]]:
 
 
 def find_move_direction(node: Node, wiggle=0.01):
+    """
+    Find the direction in which the node should move to minimize the cost from
+    one of the node to the other nodes it is connected to.
+    """
     if node.sink is None or node.drain is None:
         return Point(0, 0)
 
+    # The value is the sum of the cost from the source to the sink and the cost to the drain.
     current_value = (
         node.connections[node.sink.source].cost
         + node.connections[node.drain.source].cost
     )
 
+    # How does the value change if we move the node a little bit in the x or y direction?
     node.pos.x += wiggle
     new_value = (
         node.connections[node.sink.source].calculate_cost()
