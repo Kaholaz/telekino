@@ -18,6 +18,9 @@ colors = [
     "magenta",
 ]
 
+node_markersize = 2
+endpoint_markersize = 5
+
 
 def create_random_nodes(
     number_of_nodes: int,
@@ -173,7 +176,7 @@ def simulate(
                     node.pos.y,
                     "o",
                     color=colors[node.id % len(colors)],
-                    markersize=1,
+                    markersize=node_markersize,
                 )
             node.send_routes(transmit_from_endpoints)
 
@@ -211,7 +214,7 @@ def simulate(
 
     if not draw_steps:
         for node in filter(lambda n: not n.endpoint, nodes):
-            plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
+            plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)], markersize=node_markersize)
 
     # Plot endpoints
     for node in filter(lambda n: n.endpoint, nodes):
@@ -220,8 +223,8 @@ def simulate(
             node.pos.y,
             marker="P",
             color=colors[node.id % len(colors)],
-            markersize=10,
-            linewidth=20,
+            markersize=endpoint_markersize,
+            linewidth=10,
         )
         plt.text(node.pos.x + 1, node.pos.y, f"endpoint {node.id}")
 
