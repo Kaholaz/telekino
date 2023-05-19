@@ -12,17 +12,25 @@ class Node:
     connections: dict[int, "Connection"]
 
     endpoint: bool = False
-    endpoints: dict[int, "Node"] = field(default_factory=dict)
+    endpoint_routes: dict[int, "Route"] = field(default_factory=dict)
 
-    def process_routes(self, endpoints: dict[int, "Node"]) -> None:
+    def process_routes(self, endpoints: dict[int, "Route"]) -> None:
+        """
+        Process the routes from the connected nodes and update the endpoint_routes
+        """
+
         for endpoint_id, route in endpoints.items():
             if (
-                endpoint_id not in self.endpoints
-                or route.cost < self.endpoints[endpoint_id].cost
+                endpoint_id not in self.endpoint_routes
+                or route.cost < self.endpoint_routes[endpoint_id].cost
             ):
-                self.endpoints[endpoint_id] = route
+                self.endpoint_routes[endpoint_id] = route
 
     def send_routes(self) -> None:
+        """
+        Send the routes to the connected nodes.
+        """
+
         for connection in self.connections.values():
             connected_node = (
                 connection.nodes[0]
@@ -37,13 +45,13 @@ class Node:
                         route.endpoint,
                         route.cost + connection.cost,
                     )
-                    for endpoint_id, route in self.endpoints.items()
+                    for endpoint_id, route in self.endpoint_routes.items()
                 }
             )
 
     def make_endpoint(self) -> None:
         self.endpoint = True
-        self.endpoints = {self.id: Route(self.id, self.id, 0)}
+        self.endpoint_routes = {self.id: Route(self.id, self.id, 0)}
 
 
 @dataclass
@@ -75,6 +83,10 @@ class Connection:
 
 @dataclass
 class Route:
+    """
+    A route from the source to a node/endpoint and the cost of the route.
+    """
+
     source: int
     endpoint: int
     cost: int

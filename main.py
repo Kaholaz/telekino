@@ -8,7 +8,7 @@ def create_random_nodes(
     """
     Create a list of random nodes.
     """
-    r = random.Random(42)
+    r = random.Random(43)
     points = [
         Point(
             r.random() * (domain[1] - domain[0]) + domain[0],
@@ -44,7 +44,11 @@ def create_nodes(
 
 
 def get_value(node: Node):
-    connected_nodes = {route.source for route in node.endpoints.values()}
+    """
+    Compute the nodes worth based on the cost from all routes to the connected endpoints.
+    """
+
+    connected_nodes = {route.source for route in node.endpoint_routes.values()}
     return sum(
         node.connections[connected_node].calculate_cost()
         for connected_node in connected_nodes
@@ -56,7 +60,9 @@ def find_move_direction(node: Node, wiggle=0.01):
     Find the direction in which the node should move to minimize the cost from
     one of the node to the other nodes it is connected to.
     """
-    if len(node.endpoints) < 2:
+
+    # Do not move if the node only knows about one route to an endpoint.
+    if len(node.endpoint_routes) < 2: 
         return Point(0, 0)
 
     # The value is the sum of the cost from the source to the sink and the cost to the drain.
@@ -79,7 +85,7 @@ def find_move_direction(node: Node, wiggle=0.01):
 if __name__ == "__main__":
     from matplotlib import pyplot as plt
 
-    nodes, connections = create_random_nodes(20, 3)
+    nodes, connections = create_random_nodes(20, 4)
     colors = [
         "red",
         "green",
@@ -95,7 +101,7 @@ if __name__ == "__main__":
         plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
         plt.text(node.pos.x + 1, node.pos.y, f"endpoint {node.id}")
 
-    for _ in range(500):
+    for _ in range(700):
         for node in nodes:
             plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)], markersize=1)
             node.send_routes()
@@ -108,7 +114,7 @@ if __name__ == "__main__":
                 continue
 
             direction = directions[node.id]
-            plt.arrow(node.pos.x, node.pos.y, 3 * direction.x, 3 * direction.y)
+            plt.arrow(node.pos.x, node.pos.y, 5 * direction.x, 5 * direction.y)
             node.pos.x += direction.x
             node.pos.y += direction.y
 
@@ -116,7 +122,7 @@ if __name__ == "__main__":
             connection.update_cost()
 
     for node in filter(lambda n: not n.endpoint, nodes):
-        for route in node.endpoints.values():
+        for route in node.endpoint_routes.values():
             connection = node.connections[route.source]
             strength = 1 / connection.calculate_cost()
             plt.plot(
