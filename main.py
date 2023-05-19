@@ -128,7 +128,7 @@ if __name__ == "__main__":
                 [n.pos.x for n in connection.nodes],
                 [n.pos.y for n in connection.nodes], 
                 color="black",
-                alpha=strength,
+                alpha=min(1, strength),
             )
 
 
