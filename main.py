@@ -140,6 +140,7 @@ def simulate(
     transmit_from_endpoints: bool = False,
     node_domain: tuple[float, float] = (-20, 20),
     endpoint_domain: tuple[float, float] = None,
+    draw_steps: bool = True,
 ):
     """
 
@@ -168,13 +169,14 @@ def simulate(
 
     for _ in trange(simulation_steps, desc="Simulating time steps"):
         for node in nodes:
-            plt.plot(
-                node.pos.x,
-                node.pos.y,
-                "o",
-                color=colors[node.id % len(colors)],
-                markersize=1,
-            )
+            if draw_steps:
+                plt.plot(
+                    node.pos.x,
+                    node.pos.y,
+                    "o",
+                    color=colors[node.id % len(colors)],
+                    markersize=1,
+                )
             node.send_routes(transmit_from_endpoints)
 
         directions = {
@@ -207,6 +209,10 @@ def simulate(
                 color="black",
                 alpha=strength / max_strength,
             )
+
+    if not draw_steps:
+        for node in nodes:
+            plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
 
     plt.show()
 
@@ -291,6 +297,13 @@ if __name__ == "__main__":
         help="domain of the endpoint positions. this defaults to the node domain",
     )
 
+    argparser.add_argument(
+        "-d",
+        "--draw-steps",
+        action="store_true",
+        help="draw each step of the simulation"
+    )
+
     args = argparser.parse_args()
 
     # Run the simulation with argparse arguments
@@ -305,6 +318,7 @@ if __name__ == "__main__":
             args.transmit_from_endpoints,
             args.node_domain,
             args.endpoint_domain,
+            args.draw_steps
         )
     except ValueError as e:
         print(e)
