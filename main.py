@@ -101,12 +101,15 @@ def simulate(
         "red",
         "green",
         "blue",
-        "yellow",
         "orange",
         "purple",
         "pink",
         "brown",
         "gray",
+        "black",
+        "cyan",
+        "magenta"
+
     ]
     for node in filter(lambda n: n.endpoint, nodes):
         plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
@@ -154,4 +157,4 @@ def simulate(
 
 
 if __name__ == "__main__":
-    simulate(1000, 0.01, 0.01, 10, 2, 0, True)
+    simulate(1000, 0.01, 0.01, 20, 2, 0, True)
