@@ -130,6 +130,7 @@ def simulate(
     """
 
     from matplotlib import pyplot as plt
+    from tqdm import trange
 
     nodes, connections = create_random_nodes(number_of_nodes, number_of_endpoints, seed)
 
@@ -137,7 +138,7 @@ def simulate(
         plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
         plt.text(node.pos.x + 1, node.pos.y, f"endpoint {node.id}")
 
-    for _ in range(simulation_steps):
+    for _ in trange(simulation_steps, desc="Simulating time steps"):
         for node in nodes:
             plt.plot(
                 node.pos.x,
