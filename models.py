@@ -14,10 +14,15 @@ class Node:
     endpoint: bool = False
     endpoint_routes: dict[int, "Route"] = field(default_factory=dict)
 
-    def process_routes(self, endpoints: dict[int, "Route"]) -> None:
+    def process_routes(
+        self, endpoints: dict[int, "Route"], transmit_from_endpoint: bool = False
+    ) -> None:
         """
         Process the routes from the connected nodes and update the endpoint_routes
         """
+
+        if self.endpoint and not transmit_from_endpoint:
+            return
 
         for endpoint_id, route in endpoints.items():
             if (
@@ -26,7 +31,7 @@ class Node:
             ):
                 self.endpoint_routes[endpoint_id] = route
 
-    def send_routes(self) -> None:
+    def send_routes(self, transmit_from_endpoint: bool = False) -> None:
         """
         Send the routes to the connected nodes.
         """
@@ -46,7 +51,8 @@ class Node:
                         route.cost + connection.cost,
                     )
                     for endpoint_id, route in self.endpoint_routes.items()
-                }
+                },
+                transmit_from_endpoint,
             )
 
     def make_endpoint(self) -> None:
