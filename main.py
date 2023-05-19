@@ -185,9 +185,12 @@ def simulate(
         for connection in connections:
             connection.update_cost()
 
-    for node in filter(lambda n: not n.endpoint, nodes):
-        for route in node.endpoint_routes.values():
-            connection = node.connections[route.source]
+    for node in filter(lambda n: not n.endpoint or transmit_from_endpoints, nodes):
+        for source in set(map(lambda r: r.source, node.endpoint_routes.values())):
+            if source == node.id:  # Do not plot the connection to itself.
+                continue
+
+            connection = node.connections[source]
             strength = 1 / connection.calculate_cost()
             plt.plot(
                 [n.pos.x for n in connection.nodes],
