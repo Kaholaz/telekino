@@ -20,18 +20,18 @@ colors = [
 def create_random_nodes(
     number_of_nodes: int,
     endpoints: int,
-    seed: int,
-    node_domain: tuple[float, float],
-    endpoint_domain: tuple[float, float],
+    seed: int | None = None,
+    node_domain: tuple[float, float] = (-20, 20),
+    endpoint_domain: tuple[float, float] | None = None,
 ):
     """
     Create a list of random nodes.
     """
-    r = random.Random(seed)
+    random.seed(seed)
     points = [
         Point(
-            r.random() * (node_domain[1] - node_domain[0]) + node_domain[0],
-            r.random() * (node_domain[1] - node_domain[0]) + node_domain[0],
+            random.uniform(*node_domain),
+            random.uniform(*node_domain),
         )
         for _ in range(number_of_nodes)
     ]
@@ -41,10 +41,8 @@ def create_random_nodes(
     if endpoint_domain is not None:
         for node in filter(lambda n: n.endpoint, nodes):
             node.pos = Point(
-                r.random() * (endpoint_domain[1] - endpoint_domain[0])
-                + endpoint_domain[0],
-                r.random() * (endpoint_domain[1] - endpoint_domain[0])
-                + endpoint_domain[0],
+                random.uniform(*endpoint_domain),
+                random.uniform(*endpoint_domain),
             )
 
             for connection in node.connections.values():
@@ -128,7 +126,7 @@ def simulate(
     move_strength: float = 0.01,
     number_of_nodes: int = 5,
     number_of_endpoints: int = 2,
-    seed: int = 0,
+    seed: int | None = None,
     transmit_from_endpoints: bool = False,
     node_domain: tuple[float, float] = (-20, 20),
     endpoint_domain: tuple[float, float] = None,
@@ -225,7 +223,7 @@ if __name__ == "__main__":
     argparser.add_argument(
         "--seed",
         type=int,
-        default=0,
+        default=None,
         help="generate the same random network each time with a seed",
     )
     argparser.add_argument(
