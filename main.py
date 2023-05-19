@@ -55,7 +55,7 @@ def get_value(node: Node):
     ) * len(connected_nodes)
 
 
-def find_move_direction(node: Node, wiggle=0.01):
+def find_move_direction(node: Node, wiggle=0.01, move_strength=0.01):
     """
     Find the direction in which the node should move to minimize the cost from
     one of the node to the other nodes it is connected to.
@@ -79,7 +79,7 @@ def find_move_direction(node: Node, wiggle=0.01):
     dy = new_value - current_value
 
     node.pos.y -= wiggle
-    return Point(dx, dy)
+    return Point(dx/wiggle * move_strength, dy/wiggle * move_strength)
 
 
 if __name__ == "__main__":
