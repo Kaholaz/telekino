@@ -13,40 +13,40 @@ A command line tool for testing and visualizing the algorithm is provided. The t
 
 ## Installation
 
-    ```bash
-    python -m venv venv && source venv/bin/activate
-    ```
+```shell
+python -m venv venv && source venv/bin/activate
+```
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+```shell
+pip install -r requirements.txt
+```
 
 ## Usage
 
 The program can be run with the following command:
 
-    ```bash
-    python main.py
-    ```
+```shell
+python main.py
+```
 
 Arguments can be seen with the following command:
 
-    ```bash
-    python main.py --help
-    ```
+```shell
+python main.py --help
+```
 
 Node count and endpoints must be set for the program to work:
 
 ### Example
 
-    ```bash
-    python main.py -n 10 -e 2
-    ```
+```shell
+python main.py -n 10 -e 2
+```
 
 ## To developers
 
 Black and pylint is used for formatting and linting. The following command can be used to format the code:
 
-    ```bash
-    black .
-    ```
+```shell
+black .
+```
