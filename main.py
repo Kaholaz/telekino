@@ -193,18 +193,19 @@ def simulate(
         for connection in connections:
             connection.update_cost()
 
+    max_strength = 1 / min(connection.cost for connection in connections)
     for node in filter(lambda n: not n.endpoint or transmit_from_endpoints, nodes):
         for source in set(map(lambda r: r.source, node.endpoint_routes.values())):
             if source == node.id:  # Do not plot the connection to itself.
                 continue
 
             connection = node.connections[source]
-            strength = 1 / connection.calculate_cost()
+            strength = 1 / connection.cost
             plt.plot(
                 [n.pos.x for n in connection.nodes],
                 [n.pos.y for n in connection.nodes],
                 color="black",
-                alpha=min(1, strength),
+                alpha=strength / max_strength,
             )
 
     plt.show()
