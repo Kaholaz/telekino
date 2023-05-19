@@ -52,7 +52,7 @@ def get_value(node: Node):
     return sum(
         node.connections[connected_node].calculate_cost()
         for connected_node in connected_nodes
-    )
+    ) * len(connected_nodes)
 
 
 def find_move_direction(node: Node, wiggle=0.01):
