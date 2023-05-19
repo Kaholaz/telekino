@@ -114,7 +114,6 @@ if __name__ == "__main__":
                 continue
 
             direction = directions[node.id]
-            plt.arrow(node.pos.x, node.pos.y, 5 * direction.x, 5 * direction.y)
             node.pos.x += direction.x
             node.pos.y += direction.y
 
