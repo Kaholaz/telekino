@@ -2,6 +2,7 @@ from argparse import ArgumentParser, Namespace
 from models import Node, Connection, Point
 import random
 import argparse
+from datetime import datetime
 
 colors = [
     "red",
@@ -141,6 +142,7 @@ def simulate(
     node_domain: tuple[float, float] = (-20, 20),
     endpoint_domain: tuple[float, float] = None,
     draw_steps: bool = True,
+    export: bool = False,
 ):
     """
 
@@ -223,7 +225,13 @@ def simulate(
         )
         plt.text(node.pos.x + 1, node.pos.y, f"endpoint {node.id}")
 
-    plt.show()
+    if export:
+        time = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+        # file name is time + all args separated by underscores
+        filename = f"{time}_{simulation_steps=}_{wiggle=}_{move_strength=}_{number_of_nodes=}_{number_of_endpoints=}_{seed=}_{transmit_from_endpoints=}_{node_domain=}_{endpoint_domain=}.png"
+        plt.savefig(filename, bbox_inches="tight", dpi=2000)
+    else:
+        plt.show()
 
 
 if __name__ == "__main__":
@@ -313,6 +321,12 @@ if __name__ == "__main__":
         help="draw each step of the simulation",
     )
 
+    argparser.add_argument(
+        "--export",
+        action="store_true",
+        help="export the simulation as a png",
+    )
+
     args = argparser.parse_args()
 
     # Run the simulation with argparse arguments
@@ -328,6 +342,7 @@ if __name__ == "__main__":
             args.node_domain,
             args.endpoint_domain,
             args.draw_steps,
+            args.export,
         )
     except ValueError as e:
         print(e)
