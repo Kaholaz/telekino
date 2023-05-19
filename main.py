@@ -163,10 +163,6 @@ def simulate(
         number_of_nodes, number_of_endpoints, seed, node_domain, endpoint_domain
     )
 
-    for node in filter(lambda n: n.endpoint, nodes):
-        plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
-        plt.text(node.pos.x + 1, node.pos.y, f"endpoint {node.id}")
-
     for _ in trange(simulation_steps, desc="Simulating time steps"):
         for node in nodes:
             if draw_steps:
@@ -195,6 +191,7 @@ def simulate(
         for connection in connections:
             connection.update_cost()
 
+    # Plot the connections
     max_strength = 1 / min(connection.cost for connection in connections)
     for node in filter(lambda n: not n.endpoint or transmit_from_endpoints, nodes):
         for source in set(map(lambda r: r.source, node.endpoint_routes.values())):
@@ -207,12 +204,24 @@ def simulate(
                 [n.pos.x for n in connection.nodes],
                 [n.pos.y for n in connection.nodes],
                 color="black",
-                alpha=(strength / max_strength) ** .3,
+                alpha=(strength / max_strength) ** 0.3,
             )
 
     if not draw_steps:
-        for node in nodes:
+        for node in filter(lambda n: not n.endpoint, nodes):
             plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
+
+    # Plot endpoints
+    for node in filter(lambda n: n.endpoint, nodes):
+        plt.plot(
+            node.pos.x,
+            node.pos.y,
+            marker="P",
+            color=colors[node.id % len(colors)],
+            markersize=10,
+            linewidth=20,
+        )
+        plt.text(node.pos.x + 1, node.pos.y, f"endpoint {node.id}")
 
     plt.show()
 
@@ -301,7 +310,7 @@ if __name__ == "__main__":
         "-d",
         "--draw-steps",
         action="store_true",
-        help="draw each step of the simulation"
+        help="draw each step of the simulation",
     )
 
     args = argparser.parse_args()
@@ -318,7 +327,7 @@ if __name__ == "__main__":
             args.transmit_from_endpoints,
             args.node_domain,
             args.endpoint_domain,
-            args.draw_steps
+            args.draw_steps,
         )
     except ValueError as e:
         print(e)
