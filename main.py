@@ -207,7 +207,7 @@ def simulate(
                 [n.pos.x for n in connection.nodes],
                 [n.pos.y for n in connection.nodes],
                 color="black",
-                alpha=strength / max_strength,
+                alpha=(strength / max_strength) ** .3,
             )
 
     if not draw_steps:
