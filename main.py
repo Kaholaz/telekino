@@ -3,12 +3,15 @@ import random
 
 
 def create_random_nodes(
-    number_of_nodes: int, endpoints: int, domain: tuple[float, float] = (-20, 20)
+    number_of_nodes: int,
+    endpoints: int,
+    seed: int,
+    domain: tuple[float, float] = (-20, 20),
 ):
     """
     Create a list of random nodes.
     """
-    r = random.Random(43)
+    r = random.Random(seed)
     points = [
         Point(
             r.random() * (domain[1] - domain[0]) + domain[0],
@@ -55,7 +58,7 @@ def get_value(node: Node):
     ) * len(connected_nodes)
 
 
-def find_move_direction(node: Node, wiggle=0.01, move_strength=0.01):
+def find_move_direction(node: Node, wiggle: float, move_strength: float):
     """
     Find the direction in which the node should move to minimize the cost from
     one of the node to the other nodes it is connected to.
@@ -82,10 +85,18 @@ def find_move_direction(node: Node, wiggle=0.01, move_strength=0.01):
     return Point(dx / wiggle * move_strength, dy / wiggle * move_strength)
 
 
-if __name__ == "__main__":
+def simulate(
+    simulation_steps: int = 1000,
+    wiggle: float = 0.01,
+    move_strength: float = 0.01,
+    number_of_nodes: int = 5,
+    number_of_endpoints: int = 2,
+    seed: int = 0,
+    transmit_from_endpoints: bool = False,
+):
     from matplotlib import pyplot as plt
 
-    nodes, connections = create_random_nodes(20, 4)
+    nodes, connections = create_random_nodes(number_of_nodes, number_of_endpoints, seed)
     colors = [
         "red",
         "green",
@@ -101,7 +112,7 @@ if __name__ == "__main__":
         plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
         plt.text(node.pos.x + 1, node.pos.y, f"endpoint {node.id}")
 
-    for _ in range(700):
+    for _ in range(simulation_steps):
         for node in nodes:
             plt.plot(
                 node.pos.x,
@@ -110,10 +121,12 @@ if __name__ == "__main__":
                 color=colors[node.id % len(colors)],
                 markersize=1,
             )
-            node.send_routes()
+            node.send_routes(transmit_from_endpoints)
 
         directions = {
-            node.id: find_move_direction(node) for node in nodes if not node.endpoint
+            node.id: find_move_direction(node, wiggle, move_strength)
+            for node in nodes
+            if not node.endpoint
         }
         for node in nodes:
             if node.endpoint:
@@ -138,3 +151,7 @@ if __name__ == "__main__":
             )
 
     plt.show()
+
+
+if __name__ == "__main__":
+    simulate(1000, 0.01, 0.01, 10, 2, 0, True)

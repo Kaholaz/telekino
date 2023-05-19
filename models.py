@@ -15,7 +15,7 @@ class Node:
     endpoint_routes: dict[int, "Route"] = field(default_factory=dict)
 
     def process_routes(
-        self, endpoints: dict[int, "Route"], transmit_from_endpoint: bool = False
+        self, endpoints: dict[int, "Route"], transmit_from_endpoint: bool
     ) -> None:
         """
         Process the routes from the connected nodes and update the endpoint_routes
@@ -31,7 +31,7 @@ class Node:
             ):
                 self.endpoint_routes[endpoint_id] = route
 
-    def send_routes(self, transmit_from_endpoint: bool = False) -> None:
+    def send_routes(self, transmit_from_endpoint: bool) -> None:
         """
         Send the routes to the connected nodes.
         """
