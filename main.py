@@ -49,7 +49,7 @@ def get_value(node: Node):
     """
 
     connected_nodes = {route.source for route in node.endpoint_routes.values()}
-    return sum(
+    return - sum(
         node.connections[connected_node].calculate_cost()
         for connected_node in connected_nodes
     ) * len(connected_nodes)
@@ -71,12 +71,12 @@ def find_move_direction(node: Node, wiggle=0.01):
     # How does the value change if we move the node a little bit in the x or y direction?
     node.pos.x += wiggle
     new_value = get_value(node)
-    dx = -(new_value - current_value)
+    dx = new_value - current_value
 
     node.pos.x -= wiggle
     node.pos.y += wiggle
     new_value = get_value(node)
-    dy = -(new_value - current_value)
+    dy = new_value - current_value
 
     node.pos.y -= wiggle
     return Point(dx, dy)
