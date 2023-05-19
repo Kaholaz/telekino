@@ -66,6 +66,8 @@ class Connection:
     A connection between two nodes.
     """
 
+    __slots__ = ["nodes", "cost"]
+
     nodes: tuple[Node, Node]
     cost: int
 
@@ -93,6 +95,7 @@ class Route:
     A route from the source to a node/endpoint and the cost of the route.
     """
 
+    __slots__ = ["source", "endpoint", "cost"]
     source: int
     endpoint: int
     cost: int
@@ -100,5 +103,6 @@ class Route:
 
 @dataclass
 class Point:
+    __slots__ = ["x", "y"]
     x: int
     y: int
