@@ -49,7 +49,7 @@ def get_value(node: Node):
     """
 
     connected_nodes = {route.source for route in node.endpoint_routes.values()}
-    return - sum(
+    return -sum(
         node.connections[connected_node].calculate_cost()
         for connected_node in connected_nodes
     ) * len(connected_nodes)
@@ -62,7 +62,7 @@ def find_move_direction(node: Node, wiggle=0.01, move_strength=0.01):
     """
 
     # Do not move if the node only knows about one route to an endpoint.
-    if len(node.endpoint_routes) < 2: 
+    if len(node.endpoint_routes) < 2:
         return Point(0, 0)
 
     # The value is the sum of the cost from the source to the sink and the cost to the drain.
@@ -79,7 +79,7 @@ def find_move_direction(node: Node, wiggle=0.01, move_strength=0.01):
     dy = new_value - current_value
 
     node.pos.y -= wiggle
-    return Point(dx/wiggle * move_strength, dy/wiggle * move_strength)
+    return Point(dx / wiggle * move_strength, dy / wiggle * move_strength)
 
 
 if __name__ == "__main__":
@@ -103,7 +103,13 @@ if __name__ == "__main__":
 
     for _ in range(700):
         for node in nodes:
-            plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)], markersize=1)
+            plt.plot(
+                node.pos.x,
+                node.pos.y,
+                "o",
+                color=colors[node.id % len(colors)],
+                markersize=1,
+            )
             node.send_routes()
 
         directions = {
@@ -126,10 +132,9 @@ if __name__ == "__main__":
             strength = 1 / connection.calculate_cost()
             plt.plot(
                 [n.pos.x for n in connection.nodes],
-                [n.pos.y for n in connection.nodes], 
+                [n.pos.y for n in connection.nodes],
                 color="black",
                 alpha=min(1, strength),
             )
-
 
     plt.show()
