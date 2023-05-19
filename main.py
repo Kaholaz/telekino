@@ -214,7 +214,13 @@ def simulate(
 
     if not draw_steps:
         for node in filter(lambda n: not n.endpoint, nodes):
-            plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)], markersize=node_markersize)
+            plt.plot(
+                node.pos.x,
+                node.pos.y,
+                "o",
+                color=colors[node.id % len(colors)],
+                markersize=node_markersize,
+            )
 
     # Plot endpoints
     for node in filter(lambda n: n.endpoint, nodes):
