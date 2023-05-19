@@ -1,6 +1,20 @@
 from models import Node, Connection, Point, Route
 import random
 
+colors = [
+    "red",
+    "green",
+    "blue",
+    "orange",
+    "purple",
+    "pink",
+    "brown",
+    "gray",
+    "black",
+    "cyan",
+    "magenta",
+]
+
 
 def create_random_nodes(
     number_of_nodes: int,
@@ -97,20 +111,7 @@ def simulate(
     from matplotlib import pyplot as plt
 
     nodes, connections = create_random_nodes(number_of_nodes, number_of_endpoints, seed)
-    colors = [
-        "red",
-        "green",
-        "blue",
-        "orange",
-        "purple",
-        "pink",
-        "brown",
-        "gray",
-        "black",
-        "cyan",
-        "magenta"
 
-    ]
     for node in filter(lambda n: n.endpoint, nodes):
         plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
         plt.text(node.pos.x + 1, node.pos.y, f"endpoint {node.id}")
