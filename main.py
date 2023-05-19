@@ -1,5 +1,6 @@
 from models import Node, Connection, Point, Route
 import random
+import argparse
 
 colors = [
     "red",
@@ -43,6 +44,12 @@ def create_nodes(
     Initialize the nodes and connections between them based on the given points.
     The first node is the source and the last node is the sink.
     """
+    
+    if args.number_of_endpoints > args.number_of_nodes:
+        raise ValueError(
+            "The number of endpoints cannot be greater than the number of nodes."
+        )
+
     nodes = [Node(i, points[i], {}) for i in range(len(points))]
     connections = []
     for i in range(len(points)):
@@ -108,6 +115,20 @@ def simulate(
     seed: int = 0,
     transmit_from_endpoints: bool = False,
 ):
+    """
+
+    Simulate the network. The nodes will move around to minimize the cost to the endpoints.
+
+    Args:
+        simulation_steps (int, optional): number of steps to simulate. Defaults to 1000.
+        wiggle (float, optional): wiggle factor when calculating the move direction. Defaults to 0.01.
+        move_strength (float, optional): distance the node moves each step. Defaults to 0.01.
+        number_of_nodes (int, optional): number of moving nodes. Defaults to 5.
+        number_of_endpoints (int, optional): number of endpoints. Defaults to 2.
+        seed (int, optional): generate the same random network each time with a seed. Defaults to 0.
+        transmit_from_endpoints (bool, optional): choose whether endpoints can emit signals to nodes. Defaults to False.
+    """
+
     from matplotlib import pyplot as plt
 
     nodes, connections = create_random_nodes(number_of_nodes, number_of_endpoints, seed)
@@ -158,4 +179,52 @@ def simulate(
 
 
 if __name__ == "__main__":
-    simulate(1000, 0.01, 0.01, 20, 2, 0, True)
+    argparser = argparse.ArgumentParser(
+        prog="network-simulation",
+        description="Simulate a network of nodes that move around to minimize the cost to the endpoints.",
+    )
+
+    argparser.add_argument("-n",
+        "--number-of-nodes", type=int, required="true", help="number of moving nodes" 
+    )
+    argparser.add_argument("-e",
+        "--number-of-endpoints", type=int, required=True, help="number of endpoints"
+    )
+    argparser.add_argument(
+        "--seed",
+        type=int,
+        default=0,
+        help="generate the same random network each time with a seed",
+    )
+    argparser.add_argument(
+        "--simulation-steps", type=int, default=1000, help="number of steps to simulate"
+    )
+    argparser.add_argument(
+        "--wiggle",
+        type=float,
+        default=0.01,
+        help="wiggle factor when calculating the move direction",
+    )
+    argparser.add_argument(
+        "-m",
+        "--move-strength",
+        type=float,
+        default=0.01,
+        help="distance the node moves each step",
+    )
+
+    args = argparser.parse_args()
+
+    # Run the simulation with argparse arguments
+    try:
+        simulate(
+            args.simulation_steps,
+            args.wiggle,
+            args.move_strength,
+            args.number_of_nodes,
+            args.number_of_endpoints,
+            args.seed,
+        )
+    except ValueError as e:
+        print(e)
+        exit(1)
