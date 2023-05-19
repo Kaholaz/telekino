@@ -21,7 +21,8 @@ def create_random_nodes(
     number_of_nodes: int,
     endpoints: int,
     seed: int,
-    domain: tuple[float, float] = (-20, 20),
+    node_domain: tuple[float, float],
+    endpoint_domain: tuple[float, float],
 ):
     """
     Create a list of random nodes.
@@ -29,12 +30,27 @@ def create_random_nodes(
     r = random.Random(seed)
     points = [
         Point(
-            r.random() * (domain[1] - domain[0]) + domain[0],
-            r.random() * (domain[1] - domain[0]) + domain[0],
+            r.random() * (node_domain[1] - node_domain[0]) + node_domain[0],
+            r.random() * (node_domain[1] - node_domain[0]) + node_domain[0],
         )
         for _ in range(number_of_nodes)
     ]
-    return create_nodes(points, endpoints)
+
+    nodes, connections = create_nodes(points, endpoints)
+
+    if endpoint_domain is not None:
+        for node in filter(lambda n: n.endpoint, nodes):
+            node.pos = Point(
+                r.random() * (endpoint_domain[1] - endpoint_domain[0])
+                + endpoint_domain[0],
+                r.random() * (endpoint_domain[1] - endpoint_domain[0])
+                + endpoint_domain[0],
+            )
+
+            for connection in node.connections.values():
+                connection.update_cost()
+
+    return nodes, connections
 
 
 def create_nodes(
@@ -44,7 +60,7 @@ def create_nodes(
     Initialize the nodes and connections between them based on the given points.
     The first node is the source and the last node is the sink.
     """
-    
+
     if args.number_of_endpoints > args.number_of_nodes:
         raise ValueError(
             "The number of endpoints cannot be greater than the number of nodes."
@@ -114,6 +130,8 @@ def simulate(
     number_of_endpoints: int = 2,
     seed: int = 0,
     transmit_from_endpoints: bool = False,
+    node_domain: tuple[float, float] = (-20, 20),
+    endpoint_domain: tuple[float, float] = None,
 ):
     """
 
@@ -132,7 +150,9 @@ def simulate(
     from matplotlib import pyplot as plt
     from tqdm import trange
 
-    nodes, connections = create_random_nodes(number_of_nodes, number_of_endpoints, seed)
+    nodes, connections = create_random_nodes(
+        number_of_nodes, number_of_endpoints, seed, node_domain, endpoint_domain
+    )
 
     for node in filter(lambda n: n.endpoint, nodes):
         plt.plot(node.pos.x, node.pos.y, "o", color=colors[node.id % len(colors)])
@@ -185,11 +205,19 @@ if __name__ == "__main__":
         description="Simulate a network of nodes that move around to minimize the cost to the endpoints.",
     )
 
-    argparser.add_argument("-n",
-        "--number-of-nodes", type=int, required="true", help="number of moving nodes" 
+    argparser.add_argument(
+        "-n",
+        "--number-of-nodes",
+        type=int,
+        required=True,
+        help="number of moving nodes",
     )
-    argparser.add_argument("-e",
-        "--number-of-endpoints", type=int, required=True, help="number of endpoints"
+    argparser.add_argument(
+        "-e",
+        "--number-of-endpoints",
+        type=int,
+        required=True,
+        help="number of endpoints",
     )
     argparser.add_argument(
         "--seed",
@@ -213,6 +241,26 @@ if __name__ == "__main__":
         default=0.01,
         help="distance the node moves each step",
     )
+    argparser.add_argument(
+        "-t",
+        "--transmit-from-endpoints",
+        action="store_true",
+        help="choose whether endpoints can emit signals to nodes",
+    )
+    argparser.add_argument(
+        "--node-domain",
+        nargs=2,
+        type=float,
+        default=[-20, 20],
+        help="domain of the node positions",
+    )
+    argparser.add_argument(
+        "--endpoint-domain",
+        nargs=2,
+        type=float,
+        default=None,
+        help="domain of the endpoint positions. this defaults to the node domain",
+    )
 
     args = argparser.parse_args()
 
@@ -225,6 +273,9 @@ if __name__ == "__main__":
             args.number_of_nodes,
             args.number_of_endpoints,
             args.seed,
+            args.transmit_from_endpoints,
+            args.node_domain,
+            args.endpoint_domain,
         )
     except ValueError as e:
         print(e)
