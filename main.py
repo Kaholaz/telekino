@@ -1,3 +1,4 @@
+from argparse import ArgumentParser, Namespace
 from models import Node, Connection, Point
 import random
 import argparse
@@ -27,6 +28,15 @@ def create_random_nodes(
     """
     Create a list of random nodes.
     """
+    if node_domain[0] > node_domain[1]:
+        raise ValueError(
+            "The first element of node_domain must be less than the second."
+        )
+    if endpoint_domain is not None and endpoint_domain[0] > endpoint_domain[1]:
+        raise ValueError(
+            "The first element of endpoint_domain must be less than the second."
+        )
+
     random.seed(seed)
     points = [
         Point(
@@ -248,10 +258,26 @@ if __name__ == "__main__":
         action="store_true",
         help="choose whether endpoints can emit signals to nodes",
     )
+
+    class DomainAction(argparse.Action):
+        def __call__(
+            self,
+            parser: ArgumentParser,
+            namespace: Namespace,
+            values: list[int],
+            option_string: str | None = None,
+        ) -> None:
+            if values[0] >= values[1]:
+                raise argparse.ArgumentError(
+                    self, "The first value needs to be smaller than the second value"
+                )
+            setattr(namespace, self.dest, values)
+
     argparser.add_argument(
         "--node-domain",
         nargs=2,
         type=float,
+        action=DomainAction,
         default=[-20, 20],
         help="domain of the node positions",
     )
@@ -259,6 +285,7 @@ if __name__ == "__main__":
         "--endpoint-domain",
         nargs=2,
         type=float,
+        action=DomainAction,
         default=None,
         help="domain of the endpoint positions. this defaults to the node domain",
     )
