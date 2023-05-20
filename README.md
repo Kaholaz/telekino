@@ -35,7 +35,7 @@ To see all the available simulation parameters, run the following command:
 python main.py --help
 ```
 
-Node count and endpoints are the only required parameters. Large and long simulations with -d flag can take a long time to complete due to matplotlib. It is therefore recommended to run long simulations without the -d fla.g  If you are running a large simulation, it is also recommended to set the --max-connections parameter to a low value to avoid long simulation times.
+Node count and endpoints are the only required parameters. Large and long simulations with -d flag can take a long time to complete due to matplotlib. It is therefore recommended to run long simulations without the -d flag. If you are running a large simulation, it is also recommended to set the --max-connections parameter to a low value to avoid long simulation times.
 
 ### Example
 
