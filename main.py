@@ -138,14 +138,9 @@ def find_move_direction(node: Node, wiggle: float, move_strength: float, max_spe
     speed_x = dx / wiggle * move_strength
     speed_y = dy / wiggle * move_strength
 
-    if speed_x > max_speed:
-        speed_x = max_speed
-    elif speed_x < -max_speed:
-        speed_x = -max_speed
-    if speed_y > max_speed:
-        speed_y = max_speed
-    elif speed_y < -max_speed:
-        speed_y = -max_speed
+    # Limit the speed of the node.
+    speed_x = min(max_speed, max(-max_speed, speed_x))
+    speed_y = min(max_speed, max(-max_speed, speed_y))
 
     return Point(speed_x, speed_y)
 
