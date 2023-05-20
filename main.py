@@ -111,7 +111,7 @@ def get_value(node: Node):
     ) * len(connected_nodes)
 
 
-def find_move_direction(node: Node, wiggle: float, move_strength: float):
+def find_move_direction(node: Node, wiggle: float, move_strength: float, max_speed: float):
     """
     Find the direction in which the node should move to minimize the cost from
     one of the node to the other nodes it is connected to.
@@ -135,7 +135,19 @@ def find_move_direction(node: Node, wiggle: float, move_strength: float):
     dy = new_value - current_value
 
     node.pos.y -= wiggle
-    return Point(dx / wiggle * move_strength, dy / wiggle * move_strength)
+    speed_x = dx / wiggle * move_strength
+    speed_y = dy / wiggle * move_strength
+
+    if speed_x > max_speed:
+        speed_x = max_speed
+    elif speed_x < -max_speed:
+        speed_x = -max_speed
+    if speed_y > max_speed:
+        speed_y = max_speed
+    elif speed_y < -max_speed:
+        speed_y = -max_speed
+
+    return Point(speed_x, speed_y)
 
 
 def simulate(
@@ -150,6 +162,7 @@ def simulate(
     endpoint_domain: tuple[float, float] = None,
     draw_steps: bool = True,
     export: bool = False,
+    max_speed: float = 5,
     max_connections: int = -1,
 ):
     """
@@ -186,7 +199,7 @@ def simulate(
             node.send_routes(transmit_from_endpoints)
 
         directions = {
-            node.id: find_move_direction(node, wiggle, move_strength)
+            node.id: find_move_direction(node, wiggle, move_strength, max_speed)
             for node in nodes
             if not node.endpoint
         }
@@ -342,6 +355,26 @@ if __name__ == "__main__":
         help="export the simulation as a png",
     )
 
+    def positive_float(value: str) -> float:
+        try:
+            fvalue = float(value)
+        except ValueError:
+            raise argparse.ArgumentTypeError(
+                f"{value} is an invalid positive float value"
+            )
+
+        if fvalue <= 0:
+            raise argparse.ArgumentTypeError(
+                f"{value} is an invalid positive float value"
+            )
+        return fvalue
+    argparser.add_argument(
+        "--max-speed",
+        type=positive_float,
+        default=5,
+        help="maximum speed of the nodes",
+    )
+
     def positive_int(value: str) -> int:
         try:
             ivalue = int(value)
@@ -378,6 +411,7 @@ if __name__ == "__main__":
             args.endpoint_domain,
             args.draw_steps,
             args.export,
+            args.max_speed,
             args.max_connections,
         )
     except ValueError as e:
