@@ -197,7 +197,8 @@ def simulate(
             connection.update_cost()
 
     # Plot the connections
-    max_strength = 1 / min(connection.cost for connection in connections)
+    min_cost = min(connection.cost for connection in connections)
+    max_strength = 1 / max(min_cost, 0.001)
     for node in filter(lambda n: not n.endpoint or transmit_from_endpoints, nodes):
         for source in set(map(lambda r: r.source, node.endpoint_routes.values())):
             if source == node.id:  # Do not plot the connection to itself.
@@ -209,7 +210,7 @@ def simulate(
                 [n.pos.x for n in connection.nodes],
                 [n.pos.y for n in connection.nodes],
                 color="black",
-                alpha=(strength / max_strength) ** 0.3,
+                alpha=min(1, (strength / max_strength) ** 0.3),
             )
 
     if not draw_steps:
