@@ -94,7 +94,9 @@ def create_nodes(
         node.make_endpoint()
 
     for node in nodes[endpoints:]:
-        node.top_connections = sorted(list(node.connections.values()), key=lambda c: c.cost)[:max_connections]
+        node.top_connections = sorted(
+            list(node.connections.values()), key=lambda c: c.cost
+        )[:max_connections]
 
     return nodes, connections
 
@@ -111,7 +113,9 @@ def get_value(node: Node):
     ) * len(connected_nodes)
 
 
-def find_move_direction(node: Node, wiggle: float, move_strength: float, max_speed: float):
+def find_move_direction(
+    node: Node, wiggle: float, move_strength: float, max_speed: float
+):
     """
     Find the direction in which the node should move to minimize the cost from
     one of the node to the other nodes it is connected to.
@@ -178,7 +182,12 @@ def simulate(
     from tqdm import trange
 
     nodes, connections = create_random_nodes(
-        number_of_nodes, number_of_endpoints, seed, node_domain, endpoint_domain, max_connections
+        number_of_nodes,
+        number_of_endpoints,
+        seed,
+        node_domain,
+        endpoint_domain,
+        max_connections,
     )
 
     for _ in trange(simulation_steps, desc="Simulating time steps"):
@@ -363,6 +372,7 @@ if __name__ == "__main__":
                 f"{value} is an invalid positive float value"
             )
         return fvalue
+
     argparser.add_argument(
         "--max-speed",
         type=positive_float,
@@ -383,6 +393,7 @@ if __name__ == "__main__":
                 f"{value} is an invalid positive int value"
             )
         return ivalue
+
     argparser.add_argument(
         "--max-connections",
         type=positive_int,
