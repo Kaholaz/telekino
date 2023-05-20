@@ -10,6 +10,7 @@ class Node:
     id: int
     pos: "Point"
     connections: dict[int, "Connection"]
+    top_connections: list["Connection"] = field(default_factory=list)
 
     endpoint: bool = False
     endpoint_routes: dict[int, "Route"] = field(default_factory=dict)
@@ -35,8 +36,7 @@ class Node:
         """
         Send the routes to the connected nodes.
         """
-
-        for connection in self.connections.values():
+        for connection in self.top_connections:
             connected_node = (
                 connection.nodes[0]
                 if connection.nodes[0].id != self.id
@@ -58,6 +58,7 @@ class Node:
     def make_endpoint(self) -> None:
         self.endpoint = True
         self.endpoint_routes = {self.id: Route(self.id, self.id, 0)}
+        self.top_connections = list(self.connections.values())
 
 
 @dataclass

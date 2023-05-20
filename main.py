@@ -28,6 +28,7 @@ def create_random_nodes(
     seed: int | None = None,
     node_domain: tuple[float, float] = (-20, 20),
     endpoint_domain: tuple[float, float] | None = None,
+    max_connections: int = -1,
 ):
     """
     Create a list of random nodes.
@@ -50,7 +51,7 @@ def create_random_nodes(
         for _ in range(number_of_nodes)
     ]
 
-    nodes, connections = create_nodes(points, endpoints)
+    nodes, connections = create_nodes(points, endpoints, max_connections)
 
     if endpoint_domain is not None:
         for node in filter(lambda n: n.endpoint, nodes):
@@ -66,7 +67,7 @@ def create_random_nodes(
 
 
 def create_nodes(
-    points: list[Point], endpoints: int
+    points: list[Point], endpoints: int, max_connections: int = -1
 ) -> tuple[list[Node], list[Connection]]:
     """
     Initialize the nodes and connections between them based on the given points.
@@ -91,6 +92,9 @@ def create_nodes(
 
     for node in nodes[:endpoints]:
         node.make_endpoint()
+
+    for node in nodes[endpoints:]:
+        node.top_connections = sorted(list(node.connections.values()), key=lambda c: c.cost)[:max_connections]
 
     return nodes, connections
 
@@ -146,6 +150,7 @@ def simulate(
     endpoint_domain: tuple[float, float] = None,
     draw_steps: bool = True,
     export: bool = False,
+    max_connections: int = -1,
 ):
     """
 
@@ -165,7 +170,7 @@ def simulate(
     from tqdm import trange
 
     nodes, connections = create_random_nodes(
-        number_of_nodes, number_of_endpoints, seed, node_domain, endpoint_domain
+        number_of_nodes, number_of_endpoints, seed, node_domain, endpoint_domain, max_connections
     )
 
     for _ in trange(simulation_steps, desc="Simulating time steps"):
@@ -337,6 +342,26 @@ if __name__ == "__main__":
         help="export the simulation as a png",
     )
 
+    def positive_int(value: str) -> int:
+        try:
+            ivalue = int(value)
+        except ValueError:
+            raise argparse.ArgumentTypeError(
+                f"{value} is an invalid positive int value"
+            )
+
+        if ivalue <= 0:
+            raise argparse.ArgumentTypeError(
+                f"{value} is an invalid positive int value"
+            )
+        return ivalue
+    argparser.add_argument(
+        "--max-connections",
+        type=positive_int,
+        default=-1,
+        help="maximum number of connections per node",
+    )
+
     args = argparser.parse_args()
 
     # Run the simulation with argparse arguments
@@ -353,6 +378,7 @@ if __name__ == "__main__":
             args.endpoint_domain,
             args.draw_steps,
             args.export,
+            args.max_connections,
         )
     except ValueError as e:
         print(e)
