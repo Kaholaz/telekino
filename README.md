@@ -8,8 +8,8 @@ A command line tool for testing and visualizing the algorithm is provided. The t
 
 ## Requirements
 
-- Python 3.10
-- Python 3.10 venv module
+- Python 3.9+
+- Python venv module
 
 ## Installation
 
