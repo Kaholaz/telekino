@@ -21,6 +21,16 @@ python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+And if you also would like to develop and contribute:
+
+```shell
+pip install -r requirements-dev.txt
+```
+
+```shell
+pre-commit install
+```
+
 ## Usage
 
 The program can be run with the following command:
@@ -49,8 +59,10 @@ Further examples can be found in the [report](report.pdf).
 
 ## To developers
 
-Black and pylint is used for formatting and linting. The following command can be used to format the code:
+Black and ruff is used for formatting and linting. The following command can be used to format the code:
 
 ```shell
 black .
 ```
+
+Please use the [pre-commit](https://pre-commit.com/) framework to ensure code-quality for committed code. Once the development environment has been set up, run `pre-commit install` to install the pre-commit hook.
