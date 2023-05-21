@@ -107,7 +107,8 @@ def create_nodes(
 
 def get_value(node: Node) -> float:
     """
-    Compute the nodes worth based on the cost from all routes to the connected endpoints.
+    Compute the nodes worth based on the cost from all routes to the connected
+    endpoints.
     """
 
     connected_nodes = {route.source for route in node.endpoint_routes.values()}
@@ -129,10 +130,12 @@ def find_move_direction(
     if len(node.endpoint_routes) < 2:
         return Point(0, 0)
 
-    # The value is the sum of the cost from the source to the sink and the cost to the drain.
+    # The value is the sum of the cost from the source to the sink and the cost
+    # to the drain.
     current_value = get_value(node)
 
-    # How does the value change if we move the node a little bit in the x or y direction?
+    # How does the value change if we move the node a little bit in the x or y
+    # direction?
     node.pos.x += wiggle
     new_value = get_value(node)
     dx = new_value - current_value
@@ -170,16 +173,22 @@ def simulate(
 ) -> None:
     """
 
-    Simulate the network. The nodes will move around to minimize the cost to the endpoints.
+    Simulate the network. The nodes will move around to minimize the cost to the
+    endpoints.
 
     Args:
-        simulation_steps (int, optional): number of steps to simulate. Defaults to 1000.
-        wiggle (float, optional): wiggle factor when calculating the move direction. Defaults to 0.01.
-        move_strength (float, optional): distance the node moves each step. Defaults to 0.01.
+        simulation_steps (int, optional): number of steps to simulate. Defaults
+            to 1000.
+        wiggle (float, optional): wiggle factor when calculating the move
+            direction. Defaults to 0.01.
+        move_strength (float, optional): distance the node moves each step.
+            Defaults to 0.01.
         number_of_nodes (int, optional): number of moving nodes. Defaults to 5.
         number_of_endpoints (int, optional): number of endpoints. Defaults to 2.
-        seed (int, optional): generate the same random network each time with a seed. Defaults to 0.
-        transmit_from_endpoints (bool, optional): choose whether endpoints can emit signals to nodes. Defaults to False.
+        seed (int, optional): generate the same random network each time with a
+            seed. Defaults to 0.
+        transmit_from_endpoints (bool, optional): choose whether endpoints can
+            emit signals to nodes. Defaults to False.
     """
 
     from matplotlib import pyplot as plt  # type: ignore
@@ -266,7 +275,11 @@ def simulate(
     if export:
         time = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
         # file name is time + all args separated by underscores
-        filename = f"{time}_{simulation_steps=}_{wiggle=}_{move_strength=}_{number_of_nodes=}_{number_of_endpoints=}_{seed=}_{transmit_from_endpoints=}_{node_domain=}_{endpoint_domain=}.png"
+        filename = (
+            f"{time}_{simulation_steps=}_{wiggle=}_{move_strength=}_"
+            f"{number_of_nodes=}_{number_of_endpoints=}_{seed=}_"
+            f"{transmit_from_endpoints=}_{node_domain=}_{endpoint_domain=}.png"
+        )
         plt.savefig(filename, bbox_inches="tight", dpi=2000)
     else:
         plt.show()
@@ -275,7 +288,10 @@ def simulate(
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(
         prog="network-simulation",
-        description="Simulate a network of nodes that move around to minimize the cost to the endpoints.",
+        description=(
+            "Simulate a network of nodes that move around to minimize the cost to the"
+            " endpoints."
+        ),
     )
 
     argparser.add_argument(
