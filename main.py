@@ -228,6 +228,8 @@ def simulate(
                 continue
 
             connection = node.connections[source]
+            if connection.cost <= 0:
+                continue
             strength = 1 / connection.cost
             plt.plot(
                 [n.pos.x for n in connection.nodes],
