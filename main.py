@@ -283,46 +283,46 @@ if __name__ == "__main__":
         "--number-of-nodes",
         type=int,
         required=True,
-        help="number of moving nodes",
+        help="Number of moving nodes",
     )
     argparser.add_argument(
         "-e",
         "--number-of-endpoints",
         type=int,
         required=True,
-        help="number of endpoints to generate",
+        help="Number of endpoints to generate",
     )
     argparser.add_argument(
         "--seed",
         type=int,
         default=None,
-        help="create a seed to generate the same random network each time",
+        help="Create a seed to generate the same random network each time",
     )
     argparser.add_argument(
         "-s",
         "--simulation-steps",
         type=int,
         default=1000,
-        help="number of steps to simulate",
+        help="Number of steps to simulate",
     )
     argparser.add_argument(
         "-w",
         "--wiggle",
         type=float,
         default=0.01,
-        help="distance (dx and dy) the node travels when calculating the move direction",
+        help="Distance (dx and dy) the node travels when calculating the move direction",
     )
     argparser.add_argument(
         "-m",
         "--move-strength",
         type=float,
         default=0.01,
-        help="distance the node moves each step",
+        help="Distance the node moves each step",
     )
     argparser.add_argument(
         "--transmit-from-endpoints",
         action="store_true",
-        help="choose whether endpoints can emit signals back to nodes",
+        help="Choose whether endpoints can emit signals back to nodes",
     )
 
     class DomainAction(argparse.Action):
@@ -350,7 +350,7 @@ if __name__ == "__main__":
         type=float,
         action=DomainAction,
         default=[-20, 20],
-        help="domain of where the node positions are generated",
+        help="Domain of where the node positions are generated",
     )
     argparser.add_argument(
         "-ed",
@@ -359,21 +359,21 @@ if __name__ == "__main__":
         type=float,
         action=DomainAction,
         default=None,
-        help="domain of where the endpoint positions are generated. this defaults to the node domain",
+        help="Domain of where the endpoint positions are generated. this defaults to the node domain",
     )
 
     argparser.add_argument(
         "-d",
         "--draw-steps",
         action="store_true",
-        help="draw each step of the simulation on the graph",
+        help="Draw each step of the simulation on the graph",
     )
 
     argparser.add_argument(
         "-x",
         "--export",
         action="store_true",
-        help="export the simulation as a png",
+        help="Export the simulation as a png",
     )
 
     def positive_float(value: str) -> float:
@@ -394,7 +394,7 @@ if __name__ == "__main__":
         "--max-speed",
         type=positive_float,
         default=5,
-        help="maximum speed of the nodes",
+        help="Maximum speed of the nodes",
     )
 
     def positive_int(value: str) -> int:
@@ -416,7 +416,7 @@ if __name__ == "__main__":
         "--max-connections",
         type=positive_int,
         default=-1,
-        help="maximum number of connections per node. Improves simulation speed on large networks"
+        help="Maximum number of connections per node. Improves simulation speed on large networks"
     )
 
     args = argparser.parse_args()
