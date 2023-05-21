@@ -299,9 +299,14 @@ if __name__ == "__main__":
         help="generate the same random network each time with a seed",
     )
     argparser.add_argument(
-        "--simulation-steps", type=int, default=1000, help="number of steps to simulate"
+        "-s",
+        "--simulation-steps",
+        type=int,
+        default=1000,
+        help="number of steps to simulate",
     )
     argparser.add_argument(
+        "-w",
         "--wiggle",
         type=float,
         default=0.01,
@@ -315,7 +320,6 @@ if __name__ == "__main__":
         help="distance the node moves each step",
     )
     argparser.add_argument(
-        "-t",
         "--transmit-from-endpoints",
         action="store_true",
         help="choose whether endpoints can emit signals to nodes",
@@ -340,6 +344,7 @@ if __name__ == "__main__":
             setattr(namespace, self.dest, values)
 
     argparser.add_argument(
+        "-nd",
         "--node-domain",
         nargs=2,
         type=float,
@@ -348,6 +353,7 @@ if __name__ == "__main__":
         help="domain of the node positions",
     )
     argparser.add_argument(
+        "-ed",
         "--endpoint-domain",
         nargs=2,
         type=float,
@@ -364,6 +370,7 @@ if __name__ == "__main__":
     )
 
     argparser.add_argument(
+        "-x",
         "--export",
         action="store_true",
         help="export the simulation as a png",
