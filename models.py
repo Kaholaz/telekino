@@ -70,9 +70,9 @@ class Connection:
     __slots__ = ["nodes", "cost"]
 
     nodes: tuple[Node, Node]
-    cost: int
+    cost: float
 
-    def update_cost(self) -> float:
+    def update_cost(self) -> None:
         """
         Call the calculate_cost method and update the cost attribute.
         """
@@ -99,11 +99,11 @@ class Route:
     __slots__ = ["source", "endpoint", "cost"]
     source: int
     endpoint: int
-    cost: int
+    cost: float
 
 
 @dataclass
 class Point:
     __slots__ = ["x", "y"]
-    x: int
-    y: int
+    x: float
+    y: float

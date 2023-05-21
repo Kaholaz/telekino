@@ -1,4 +1,7 @@
 from argparse import ArgumentParser, Namespace
+from collections.abc import Sequence
+from typing import Any, Optional, Union
+
 from models import Node, Connection, Point
 import random
 import argparse
@@ -26,11 +29,11 @@ endpoint_linewidth = 5
 def create_random_nodes(
     number_of_nodes: int,
     endpoints: int,
-    seed: int | None = None,
+    seed: Optional[int] = None,
     node_domain: tuple[float, float] = (-20, 20),
-    endpoint_domain: tuple[float, float] | None = None,
+    endpoint_domain: Optional[tuple[float, float]] = None,
     max_connections: int = -1,
-):
+) -> tuple[list[Node], list[Connection]]:
     """
     Create a list of random nodes.
     """
@@ -102,7 +105,7 @@ def create_nodes(
     return nodes, connections
 
 
-def get_value(node: Node):
+def get_value(node: Node) -> float:
     """
     Compute the nodes worth based on the cost from all routes to the connected endpoints.
     """
@@ -116,7 +119,7 @@ def get_value(node: Node):
 
 def find_move_direction(
     node: Node, wiggle: float, move_strength: float, max_speed: float
-):
+) -> Point:
     """
     Find the direction in which the node should move to minimize the cost from
     one of the node to the other nodes it is connected to.
@@ -156,15 +159,15 @@ def simulate(
     move_strength: float = 0.01,
     number_of_nodes: int = 5,
     number_of_endpoints: int = 2,
-    seed: int | None = None,
+    seed: Optional[int] = None,
     transmit_from_endpoints: bool = False,
     node_domain: tuple[float, float] = (-20, 20),
-    endpoint_domain: tuple[float, float] = None,
+    endpoint_domain: Optional[tuple[float, float]] = None,
     draw_steps: bool = True,
     export: bool = False,
     max_speed: float = 5,
     max_connections: int = -1,
-):
+) -> None:
     """
 
     Simulate the network. The nodes will move around to minimize the cost to the endpoints.
@@ -179,7 +182,7 @@ def simulate(
         transmit_from_endpoints (bool, optional): choose whether endpoints can emit signals to nodes. Defaults to False.
     """
 
-    from matplotlib import pyplot as plt
+    from matplotlib import pyplot as plt  # type: ignore
     from tqdm import trange
 
     nodes, connections = create_random_nodes(
@@ -323,9 +326,13 @@ if __name__ == "__main__":
             self,
             parser: ArgumentParser,
             namespace: Namespace,
-            values: list[int],
-            option_string: str | None = None,
+            values: Union[str, Sequence[Any], None],
+            option_string: Optional[str] = None,
         ) -> None:
+            if values is None or type(values) == str or len(values) != 2:
+                raise argparse.ArgumentError(
+                    self, "The domain needs to be a sequence of two values"
+                )
             if values[0] >= values[1]:
                 raise argparse.ArgumentError(
                     self, "The first value needs to be smaller than the second value"
