@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <random>
+#include <mutex>
 #include "telekino_models.hpp"
 
 Point::Point(double x, double y) : x(x), y(y) {}
@@ -27,6 +28,7 @@ double Connection::calculate_cost() {
 Node::Node(int id, const Point& pos) : id(id), pos(pos) {}
 
 void Node::process_routes(const std::unordered_map<int, Route*>& endpoints) {
+    std::lock_guard<std::mutex> lock(endpoint_routes_mutex);
     for (const auto& endpoint : endpoints) {
         int endpoint_id = endpoint.first;
         const auto& route = endpoint.second;

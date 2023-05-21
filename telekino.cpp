@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 #include <random>
+#include <thread>
+#include <chrono>
 #include "telekino_models.hpp"
 
 std::pair<std::vector<Node*>, std::vector<Connection*>> create_nodes(const std::vector<Point>& points, int endpoints) {
@@ -49,25 +51,53 @@ std::pair<std::vector<Node*>, std::vector<Connection*>> create_random_nodes(int 
 }
 
 
-std::vector<Node*> simulate(int number_of_nodes, int endpoints, int iterations, std::pair<float, float> domain = {-20.0, 20.0}) {
+std::vector<Node*> simulate(int number_of_nodes, int endpoints, int durationInSeconds, std::pair<float, float> domain = {-20.0, 20.0}) {
     std::cout << "Generating nodes" << std::endl;
     auto [nodes, connections] = create_random_nodes(number_of_nodes, endpoints, domain);
 
     std::cout << "Starting simulation" << std::endl;
-    for (int i = 0; i < iterations; ++i) {
-        std::cout << "Iteration " << i + 1  << " / " << iterations << std::endl;
-        for (const auto& node : nodes) {
+
+    // Flag to signal worker threads to stop
+    bool stopSimulation = false;
+
+    std::vector<std::thread> threads;
+
+    auto nodeThreadFunction = [&](Node* node) {
+        auto startTime = std::chrono::steady_clock::now();
+        while (!stopSimulation) {
             node->send_routes();
+
+            if (!node->endpoint) {
+                Point direction = node->find_move_direction();
+                node->pos.x += direction.x;
+                node->pos.y += direction.y;
+            }
         }
 
-        for (const auto& node : nodes) {
-            if (node->endpoint) continue;
+        auto endTime = std::chrono::steady_clock::now();
+        auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime).count();
+        std::cout << "Node " << node->id << " finished after " << elapsedSeconds << " seconds." << std::endl;
+    };
 
-            Point direction = node->find_move_direction();
-            node->pos.x += direction.x;
-            node->pos.y += direction.y;
-        }
+    for (const auto& node : nodes) {
+        // Spawn a thread for each node and pass the node as an argument
+        threads.emplace_back(nodeThreadFunction, node);
+    }
 
+
+    auto startTime = std::chrono::steady_clock::now();
+    int64_t elapsedSeconds = 0;
+    do {
+        auto now = std::chrono::steady_clock::now();
+        elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(now - startTime).count();
+        std::cout << "Elapsed time: " << elapsedSeconds << " seconds" << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    } while (elapsedSeconds < durationInSeconds);
+
+    stopSimulation = true;
+
+    for (auto& thread : threads) {
+        thread.join();
     }
 
     return nodes;
@@ -76,8 +106,8 @@ std::vector<Node*> simulate(int number_of_nodes, int endpoints, int iterations, 
 int main() {
     int number_of_nodes = 100;
     int number_of_endpoints = 10;
-    int iterations = 1000;
-    std::vector<Node*> nodes = simulate(number_of_nodes, number_of_endpoints, iterations);
+    int durationsInSeconds = 10;
+    std::vector<Node*> nodes = simulate(number_of_nodes, number_of_endpoints, durationsInSeconds);
 
     for (const auto& node : nodes) {
         std::cout << "Node " << node->id << " at (" << node->pos.x << ", " << node->pos.y << ")";

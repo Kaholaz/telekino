@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <utility>
 #include <cmath>
+#include <mutex>
 
 class Point {
 public:
@@ -41,6 +42,7 @@ public:
     int id;
     Point pos;
     std::unordered_map<int, Connection*> connections;
+    std::mutex endpoint_routes_mutex;
 
     bool endpoint;
     std::unordered_map<int, Route*> endpoint_routes;
