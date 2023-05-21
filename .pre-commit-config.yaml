@@ -10,7 +10,7 @@ repos:
     rev: 23.3.0
     hooks:
       - id: black 
-        args: [--line-length=88, --experimental-string-processing]
+        args: [--line-length=88, --preview]
   # MyPy
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.3.0
