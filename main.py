@@ -18,8 +18,9 @@ colors = [
     "magenta",
 ]
 
-node_markersize = 2
-endpoint_markersize = 5
+node_markersize = 0.8
+endpoint_markersize = 3
+endpoint_linewidth = 5
 
 
 def create_random_nodes(
@@ -253,7 +254,7 @@ def simulate(
             marker="P",
             color=colors[node.id % len(colors)],
             markersize=endpoint_markersize,
-            linewidth=10,
+            linewidth=endpoint_linewidth,
         )
         plt.text(node.pos.x + 1, node.pos.y, f"endpoint {node.id}")
 
