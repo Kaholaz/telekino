@@ -290,13 +290,13 @@ if __name__ == "__main__":
         "--number-of-endpoints",
         type=int,
         required=True,
-        help="number of endpoints",
+        help="number of endpoints to generate",
     )
     argparser.add_argument(
         "--seed",
         type=int,
         default=None,
-        help="generate the same random network each time with a seed",
+        help="create a seed to generate the same random network each time",
     )
     argparser.add_argument(
         "-s",
@@ -310,7 +310,7 @@ if __name__ == "__main__":
         "--wiggle",
         type=float,
         default=0.01,
-        help="wiggle factor when calculating the move direction",
+        help="distance (dx and dy) the node travels when calculating the move direction",
     )
     argparser.add_argument(
         "-m",
@@ -322,7 +322,7 @@ if __name__ == "__main__":
     argparser.add_argument(
         "--transmit-from-endpoints",
         action="store_true",
-        help="choose whether endpoints can emit signals to nodes",
+        help="choose whether endpoints can emit signals back to nodes",
     )
 
     class DomainAction(argparse.Action):
@@ -350,7 +350,7 @@ if __name__ == "__main__":
         type=float,
         action=DomainAction,
         default=[-20, 20],
-        help="domain of the node positions",
+        help="domain of where the node positions are generated",
     )
     argparser.add_argument(
         "-ed",
@@ -359,14 +359,14 @@ if __name__ == "__main__":
         type=float,
         action=DomainAction,
         default=None,
-        help="domain of the endpoint positions. this defaults to the node domain",
+        help="domain of where the endpoint positions are generated. this defaults to the node domain",
     )
 
     argparser.add_argument(
         "-d",
         "--draw-steps",
         action="store_true",
-        help="draw each step of the simulation",
+        help="draw each step of the simulation on the graph",
     )
 
     argparser.add_argument(
@@ -412,10 +412,11 @@ if __name__ == "__main__":
         return ivalue
 
     argparser.add_argument(
+        "-c",
         "--max-connections",
         type=positive_int,
         default=-1,
-        help="maximum number of connections per node",
+        help="maximum number of connections per node. Improves simulation speed on large networks"
     )
 
     args = argparser.parse_args()
