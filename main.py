@@ -326,7 +326,9 @@ if __name__ == "__main__":
         "--wiggle",
         type=float,
         default=0.01,
-        help="Distance (dx and dy) the node travels when calculating the move direction",
+        help=(
+            "Distance (dx and dy) the node travels when calculating the move direction"
+        ),
     )
     argparser.add_argument(
         "-m",
@@ -375,7 +377,10 @@ if __name__ == "__main__":
         type=float,
         action=DomainAction,
         default=None,
-        help="Domain of where the endpoint positions are generated. this defaults to the node domain",
+        help=(
+            "Domain of where the endpoint positions are generated. this defaults to the"
+            " node domain"
+        ),
     )
 
     argparser.add_argument(
@@ -432,7 +437,10 @@ if __name__ == "__main__":
         "--max-connections",
         type=positive_int,
         default=-1,
-        help="Maximum number of connections per node. Improves simulation speed on large networks"
+        help=(
+            "Maximum number of connections per node. Improves simulation speed on large"
+            " networks"
+        ),
     )
 
     args = argparser.parse_args()
