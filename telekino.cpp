@@ -104,14 +104,13 @@ std::vector<Node*> simulate(int number_of_nodes, int endpoints, int durationInSe
 }
 
 int main() {
-    int number_of_nodes = 100;
-    int number_of_endpoints = 10;
-    int durationsInSeconds = 10;
+    int number_of_nodes = 50;
+    int number_of_endpoints = 5;
+    int durationsInSeconds = 120;
     std::vector<Node*> nodes = simulate(number_of_nodes, number_of_endpoints, durationsInSeconds);
 
     for (const auto& node : nodes) {
-        std::cout << "Node " << node->id << " at (" << node->pos.x << ", " << node->pos.y << ")";
-        std::cout << " is " << (node->endpoint ? "" : "not ") << "an endpoint" << std::endl;
+        std::cout << node->pos.x << "," << node->pos.y << std::endl; 
     }
     return 0;
 }
