@@ -8,3 +8,7 @@ __pycache__
 
 #Virtual Environments
 venv/
+
+#C++
+*.o
+telekino
