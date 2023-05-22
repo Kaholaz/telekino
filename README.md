@@ -1,7 +1,7 @@
 # Telekino
 
 <div style="display:flex; align-items:center; justify-content: center;">
-    <img src="https://home.samfundet.no/~arunang/thumbnail-min.png" alt="thumbnail" style="max-width: 1200px" />
+    <img src="https://home.samfundet.no/~arunang/thumbnail-min.png" alt="thumbnail" style="max-width: 1200px" loading="lazy" />
 </div>
 
 ## Description
