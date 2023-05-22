@@ -62,6 +62,23 @@ python main.py -n 10 -e 2
 
 Further examples can be found in the [report](report.pdf).
 
+## C++ implementation
+An implementation in C++ is also provided. The C++ implementation is multithreaded. The implementation is not as flexible as the Python implementation, and is unstable. The C++ implementation is therefore not recommended for use, but can be tested if desired. The C++ implementation can sometimes get Segmentation Faults, and must be re-run if this happens. To run the C++ implementation, make and G++ 11 or higher is required.
+
+The C++ implementation can be compiled with the following command in  the [cpp](cpp) directory:   
+
+```shell
+ make
+ ```
+
+The program can be run with the following command:
+    
+```shell
+./telekino
+```
+
+The only way to visualize the simulation is to use a graphing tool and a csv file as input. The result can be copied into a file, and visualized using a online graphing tool like [csvplot](https://www.csvplot.com/).
+
 ## To developers
 
 Black and ruff is used for formatting and linting. The following command can be used to format the code:
@@ -71,3 +88,4 @@ black .
 ```
 
 Please use the [pre-commit](https://pre-commit.com/) framework to ensure code-quality for committed code. Once the development environment has been set up, run `pre-commit install` to install the pre-commit hook.
+
