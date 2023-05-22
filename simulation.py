@@ -18,8 +18,8 @@ colors = [
     "magenta",
 ]
 
-node_markersize = 0.8
-endpoint_markersize = 3
+node_markersize = 4
+endpoint_markersize = 8
 endpoint_linewidth = 5
 
 
