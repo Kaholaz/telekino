@@ -72,6 +72,7 @@ std::vector<Node*> simulate(int number_of_nodes, int endpoints, int durationInSe
                 node->pos.x += direction.x;
                 node->pos.y += direction.y;
             }
+            std::this_thread::yield();
         }
 
         auto endTime = std::chrono::steady_clock::now();
