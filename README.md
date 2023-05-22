@@ -1,6 +1,11 @@
 # Telekino
 
+<div style="display:flex; align-items:center; justify-content: center;">
+    <img src="https://home.samfundet.no/~arunang/thumbnail-min.png" alt="thumbnail" style="max-width: 1200px" />
+</div>
+
 ## Description
+
 
 Telekino is a algorithm for finding optimal connection between endpoints in a mobile network. Each node makes its own decisions based on the connection it has to its neighbors. The algorithm is based on the distributed Bellman-Ford algorithm. Detailed informmation about the algorithm can be found in the [report](report.pdf).
 
